@@ -1,0 +1,439 @@
+---
+description: Master Flutter Engineering Rules for Clean Architecture, State, and API Patterns
+globs: **/*.dart
+alwaysApply: true
+---
+
+# 1. Core Engineering Principles
+- **Clean Code & SOLID:** Keep files and functions small (<20 lines). Prefer clarity over cleverness.
+- **No Business Logic in UI:** The presentation layer must only handle rendering and user interaction. All logic belongs in the domain layer.
+- **Token Efficiency & LM Studio:** Whenever generating boilerplate, tests, or large UI scaffolds, ALWAYS use the **`/lmstudio-orchestration`** pattern to offload the heavy text generation to local models, saving cloud tokens. The cloud model should act as the planner and reviewer.
+- **Minimal Changes:** Fix the root cause with the smallest possible safe change. Do not break existing functionality.
+
+# 2. Feature-First Clean Architecture
+Your project structure MUST follow this exact blueprint:
+
+```text
+lib/
+├── config/              # Themes, Routes (onGenerateRoute or go_router)
+├── core/
+│   ├── constants/       # Keys, endpoints, colors, app_icons, borders, app_text_styles
+│   ├── database/        # API clients, local cache (SecureStorage, Hive)
+│   ├── networking/      # network_info, api_error_handler
+│   ├── errors/          # Failures and Exceptions
+│   ├── helpers/         # Reusable generic widgets (CustomButton, etc.)
+│   ├── services/        # Singletons (SharedPreferences)
+│   └── utls/            # GetIt DI setup (setup_service_locator.dart)
+└── features/
+    └── <feature_name>/
+        ├── data/        # DataSources, Models, Repository Impls
+        ├── domain/      # Entities, Abstract Repositories, UseCases
+        └── presentation/# Cubits, States, Views, Widgets
+```
+
+# 3. State Management (Cubit + Dart 3 Sealed Classes)
+- **Always use Cubit** for feature state (not full Bloc).
+- **Use Dart 3 `sealed class`** hierarchies for exhaustive state matching.
+- Protect async emissions with `if (!isClosed)`.
+
+# 4. Error Handling & Result Wrapper (Freezed)
+- Domain layer UseCases/Repositories MUST return a `Result<T>` union created with the `freezed` package instead of `dartz`.
+- Do not use `dartz` or `Either`.
+- Use `.when()` or `.map()` to handle success vs failure in the UI layer.
+- Map external errors to a `Failure` hierarchy.
+
+**Example Result Wrapper (core/networking/api_result.dart):**
+```dart
+import 'package:freezed_annotation/freezed_annotation.dart';
+import '../errors/failures.dart';
+part 'api_result.freezed.dart';
+
+@freezed
+class ApiResult<T> with _$ApiResult<T> {
+  const factory ApiResult.success(T data) = Success<T>;
+  const factory ApiResult.failure(Failure failure) = FailureResult<T>;
+}
+```
+
+**Example UseCase:**
+```dart
+class GetUserUseCase {
+  final UserRepository repository;
+  GetUserUseCase(this.repository);
+
+  Future<ApiResult<User>> call() async {
+    return await repository.getUser();
+  }
+}
+```
+
+**Example UI Handling:**
+```dart
+final result = await getUserUseCase();
+result.when(
+  success: (user) => emit(UserLoaded(user)),
+  failure: (failure) => emit(UserError(failure.message)),
+);
+```
+
+# 5. Dependency Injection (GetIt)
+- Manage all dependencies via `get_it` in `setup_service_locator.dart`.
+- Use `registerLazySingleton` for Repositories, DataSources, and API Clients.
+- **DI Pattern Example**:
+```dart
+import 'package:dio/dio.dart';
+import 'package:get_it/get_it.dart';
+import 'package:wash/core/networking/dio_factory.dart';
+import 'package:wash/fearure/register/data/repo/register_repo.dart';
+
+GetIt getIt = GetIt.instance;
+
+Future<void> setupGetIt() async {
+  getIt.registerLazySingleton<Dio>(() => DioFactory.getDio());
+  getIt.registerLazySingleton<RegisterRepo>(() => RegisterRepo(getIt()));
+}
+```
+
+# 6. Networking & API Layer Patterns
+
+### A. Firebase Error Handler
+Create a robust `ApiErrorHandler` specifically for handling `FirebaseAuthException` and `FirebaseException`.
+
+**Example:**
+```dart
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+class ApiErrorHandler {
+  final String message;
+  final String? code;
+  ApiErrorHandler._(this.message, this.code);
+
+  static ApiErrorHandler handle(Object error) {
+    if (error is FirebaseAuthException) {
+      switch (error.code) {
+        case 'user-not-found': return ApiErrorHandler._('No user found.', error.code);
+        default: return ApiErrorHandler._(error.message ?? 'Auth failed.', error.code);
+      }
+    }
+    return ApiErrorHandler._('An unexpected error occurred.', null);
+  }
+}
+```
+
+
+### B. REST API (Dio + DioFactory)
+For future REST APIs, use this architecture:
+- **`ApiErrorHandler` (Dio):** Maps `DioException` to human-readable strings based on timeout, unknown, or bad response.
+- **`DioFactory`:** A singleton factory configuration for Dio.
+
+```dart
+class DioFactory {
+  static late Dio _dio;
+
+  static getDio() {
+    Duration duration = Duration(seconds: 30);
+    _dio = Dio(BaseOptions(
+      baseUrl: ApiConstants.baseUrl,
+      receiveTimeout: duration,
+      connectTimeout: duration,
+      sendTimeout: duration,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      }
+    ));
+
+    _dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (o, r) {
+        o.headers['Authorization'] = 'Bearer $token';
+      },
+    ));
+
+    _dio.interceptors.add(PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: true,
+        responseHeader: false,
+        error: true,
+        compact: true,
+        maxWidth: 90,
+        enabled: kDebugMode,
+    ));
+
+    return _dio;
+  }
+}
+```
+
+# 7. Routing (onGenerateRoute)
+- Define all routes as static constants in a sealed `AppRoutes` class located in `lib/config/routes/app_routes.dart`.
+
+**Example:**
+```dart
+import 'package:flutter/material.dart';
+
+sealed class AppRoutes {
+  static const String home = '/home';
+  static const String login = '/login';
+
+  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case home:
+        return MaterialPageRoute(builder: (_) => const HomeView());
+      case login:
+        return MaterialPageRoute(builder: (_) => const LoginView());
+      default:
+        return MaterialPageRoute(builder: (_) => const NotFoundView());
+    }
+  }
+}
+```
+
+# 8. Constants & Theming
+Centralize all configurations in `lib/core/constants/`. Below are the required structures for each file:
+
+### `app_colors.dart`
+```dart
+class AppColors {
+  static const Color primary = Color(0xFF6236FF);
+  static const Color background = Color(0xFF0D0A14);
+}
+```
+
+### `app_icons.dart`
+```dart
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+class AppIcons {
+  AppIcons._();
+  static const visibilityOff = FontAwesomeIcons.eyeLowVision;
+  static const chatBubble = Icons.chat_bubble_outline_rounded;
+}
+```
+
+### `borders.dart`
+```dart
+@immutable
+sealed class AppBorders {
+  const AppBorders();
+  static const double _main = 16;
+  static const BorderRadius zero = BorderRadius.zero;
+  static const BorderRadius m = BorderRadius.all(Radius.circular(_main + 12));
+}
+```
+
+### `app_text_styles.dart`
+```dart
+class AppTextStyles {
+  AppTextStyles._();
+  static const TextStyle heading1 = TextStyle(fontSize: 32, fontWeight: FontWeight.bold);
+}
+```
+
+### `constants.dart`
+```dart
+class AppConstants {
+  AppConstants._();
+  static const String appName = "AcademIQ";
+}
+```
+
+
+
+# Project Global Engineering Rules
+
+## 1) Clean code always
+- Keep code clean, readable, and maintainable.
+- Prefer clarity over cleverness.
+
+## 2) Small files and functions
+- Files and functions must stay small and focused.
+- Avoid large classes or overly complex files.
+
+## 3) Comments only when necessary
+- Add comments only when the intent is not obvious.
+- Do not add redundant or obvious comments.
+
+## 4) Clean Architecture discipline (strict)
+- Follow Clean Architecture layer boundaries strictly:
+  presentation → domain → data
+- Each layer must have a single responsibility.
+- Never bypass layers or mix responsibilities.
+- Do not put business logic inside the UI (presentation layer).
+- UI must only handle rendering, user interaction, and state observation.
+- All business logic must reside in domain layer and be triggered via Cubit/UseCases.
+- Data layer must only handle API calls, persistence, and data mapping.
+- Do not introduce unnecessary abstractions or overengineering.
+
+## 5) Apply SOLID, DRY, and sound engineering principles
+- Apply SOLID, DRY, and other sound engineering principles when beneficial.
+- Do not force patterns unnecessarily.
+- use core and config folder 
+
+## 6) Root-cause first
+- Always identify and fix the root cause, not just symptoms.
+- Do not apply superficial fixes.
+
+## 7) Minimal safe changes
+- Make the smallest possible change that solves the problem.
+- Do not refactor unrelated code unless explicitly requested.
+
+## 8) No breaking changes
+- Do not break existing functionality, APIs, flows, or UX unless explicitly instructed.
+
+## 9) Follow repository conventions
+- Follow existing architecture, folder structure, naming conventions, and patterns.
+- Do not introduce a new style inconsistent with the project.
+
+## 10) Core folder for shared components
+- Any reusable logic, utilities, services, constants, extensions, helpers, or shared components used in more than one place must be placed in the core/ folder.
+- Avoid duplication across features.
+
+## 11) Performance awareness (Flutter)
+- Follow Flutter performance best practices at all times.
+- Avoid unnecessary widget rebuilds.
+- Prefer const constructors wherever possible.
+- Avoid heavy work inside build methods.
+- Be careful when using setState:
+  - Use setState only for local UI state when necessary.
+  - Never use setState for business logic or feature state.
+  - Prefer Cubit/Bloc for managing feature and application state.
+  - Avoid triggering unnecessary rebuilds of large widget trees.
+- Prefer efficient widget composition and separation to minimize rebuild scope.
+- Avoid unnecessary object allocations inside build methods.
+- Avoid creating controllers (`TextEditingController`, `AnimationController`), `FocusNode`, or other expensive objects inside `build()`.
+- Dispose controllers and focus nodes properly when owned by widgets (use `dispose()` in `StatefulWidget`).
+
+## 12) State management discipline (Cubit / Clean Architecture)
+- Use Cubit/Bloc for feature state and business logic coordination.
+- UI must never contain business logic.
+- UI must only observe state and trigger Cubit actions.
+- Do not bypass architecture layers.
+
+## 13) Edge cases and error handling
+- Properly handle null, empty, loading, and error states.
+- Do not allow silent failures.
+- Always ensure safe and predictable behavior.
+- Use a consistent error handling strategy across layers:
+  - Data layer: catch exceptions and map them to typed Failure/Error classes.
+  - Domain layer: return Result types (e.g., ApiResult<Success>) from use cases/repositories.
+  - Presentation layer: map failures to user-friendly messages and appropriate UI states.
+- Errors must propagate cleanly: data → domain → presentation, never skip layers.
+
+## 14) Dependencies rule
+- Do not add new packages unless necessary and justified.
+- Any package added must be:
+  - Latest stable version
+  - Well-maintained
+  - Production-grade and trusted
+
+## 15) Security awareness
+- Always consider security implications.
+- Proactively warn about potential security risks.
+- Never hardcode secrets, tokens, or credentials.
+- Do not log sensitive information.
+- Safely validate and handle external and API data.
+
+## 16) Follow modern best practices
+- Always follow current (2026) best practices and modern Flutter/Dart standards.
+- Prefer native Dart 3+ features over code generation libraries:
+  - Use `sealed class` for state unions and exhaustive pattern matching.
+  - Use `switch` expressions and pattern matching for control flow.
+  - Use records for lightweight data grouping when appropriate.
+  - Avoid Freezed or other code generation unless the project explicitly adopts it.
+  - Keep the project free from unnecessary build_runner dependencies.
+
+## 17) Team mindset (engineering partner mode)
+- Act as a senior engineer partner, not just a task executor.
+- Suggest improvements when valuable.
+- Think critically about solutions.
+- Explain tradeoffs briefly when relevant.
+
+## 18) No assumptions without verification
+- Always read and understand relevant code before modifying it.
+- Do not assume behavior without verification.
+- Ask or clearly state assumptions if something is unclear.
+
+## 19) Avoid duplication
+- Reuse existing logic when available.
+- Do not duplicate code unnecessarily.
+
+## 20) Dart naming conventions and best practices
+- Follow official Dart style guide and conventions:
+  - Files: `snake_case.dart`
+  - Classes, enums, typedefs: `PascalCase`
+  - Variables, functions, parameters: `camelCase`
+  - Constants: `camelCase` (not SCREAMING_CAPS)
+  - Private members: prefix with `_`
+- Feature folder structure: `feature_name/data/`, `feature_name/domain/`, `feature_name/presentation/`
+- Follow Effective Dart guidelines for API design, usage, and documentation.
+
+## 21) Import ordering
+- Organize imports in this order, separated by blank lines:
+  1. Dart SDK imports (`dart:`)
+  2. Flutter SDK imports (`package:flutter/`)
+  3. Third-party package imports (`package:`)
+  4. Project package imports (`package:project_name/`)
+- Use relative imports within the same feature.
+- Use package imports across features.
+- Never use unused imports.
+
+## 22) Testing discipline
+- Write unit tests for domain and data layer logic.
+- Write widget tests for critical UI flows.
+- Bug fixes must include a test that reproduces the issue.
+- Follow existing test structure and naming conventions.
+- Tests must be deterministic — no flaky or timing-dependent tests.
+- Keep tests focused: one behavior per test case.
+
+## 23) Separation of concerns enforcement
+- Presentation layer must not directly access repositories or data sources.
+- All business operations must go through domain use cases.
+- Cubits must depend only on use cases, never directly on repositories or data sources.
+- Domain layer must remain independent of Flutter and UI frameworks.
+
+## 24) Completion self-review checklist (mandatory)
+Before finishing any task, verify:
+
+- The root cause is correctly addressed.
+- The solution is safe and minimal.
+- No existing functionality is broken.
+- Architecture rules are respected.
+- No business logic exists in UI.
+- No performance regressions introduced.
+- No security risks introduced.
+
+Then provide a brief summary of:
+- What was changed
+- Why it was changed
+- Why the solution is safe and correct
+
+## 25) Git and Pull Request output (mandatory after task completion)
+
+After I confirm that the task is complete and approved, you must provide:
+
+Branch name:
+- Follow conventional naming format:
+  fix/<description>
+  feat/<description>
+  refactor/<description>
+  perf/<description>
+  chore/<description>
+
+Commit message:
+- Clear, concise, professional
+- Follow conventional commit format
+
+Pull Request title:
+- Clear and descriptive
+
+Pull Request description:
+- Must be in markdown (.md) format
+- Keep it concise and straight to the point
+- Include: summary and root cause (if bug fix)
+
+
+## 26 context file
+create a file in the root dir to upadate the changes in the projects to be aware of the new things , make it simple but has details it's like a context and the overview of the project 
+
+

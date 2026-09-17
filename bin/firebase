@@ -1,0 +1,1 @@
+#!/bin/bash\nnpx -y firebase-tools@latest "$@"
