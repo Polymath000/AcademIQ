@@ -1,4 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import '../errors/failures.dart';
+import '../errors/exceptions.dart';
 
 class ApiErrorHandler {
   final String message;
@@ -7,6 +9,9 @@ class ApiErrorHandler {
   ApiErrorHandler._(this.message, this.code);
 
   static ApiErrorHandler handle(Object error) {
+    if (error is NoInternetException) {
+      return ApiErrorHandler._('No internet connection. Please check your network and try again.', 'no-internet');
+    }
     if (error is FirebaseAuthException) {
       switch (error.code) {
         case 'user-not-found':
@@ -36,5 +41,9 @@ class ApiErrorHandler {
     }
 
     return ApiErrorHandler._('An unexpected error occurred.', null);
+  }
+
+  Failure toFailure() {
+    return ServerFailure(message);
   }
 }

@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../config/theme/app_colors.dart';
+import '../../../../config/theme/app_text_styles.dart';
 import '../../../../core/constants/borders.dart';
+import '../../../../core/widgets/app_button.dart';
 import '../cubit/onboarding_cubit.dart';
 import '../cubit/onboarding_state.dart';
 import '../widgets/onboarding_page_item.dart';
@@ -57,10 +59,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                       },
                       child: Text(
                         'Skip',
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.6),
-                          fontSize: 15,
-                        ),
+                        style: AppTextStyles.bodyMedium,
                       ),
                     ),
                   ],
@@ -114,8 +113,9 @@ class _OnboardingViewState extends State<OnboardingView> {
 
                         SizedBox(
                           width: double.infinity,
-                          height: 52,
-                          child: ElevatedButton(
+                          child: AppButton(
+                            text: isLast ? 'Get Started' : 'Next',
+                            elevation: 4.0,
                             onPressed: () {
                               if (isLast) {
                                 cubit.completeOnboarding();
@@ -126,21 +126,6 @@ class _OnboardingViewState extends State<OnboardingView> {
                                 );
                               }
                             },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.brandPurple,
-                              foregroundColor: Colors.white,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: AppBorders.m,
-                              ),
-                              elevation: 4,
-                            ),
-                            child: Text(
-                              isLast ? 'Get Started' : 'Next',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
                           ),
                         ),
                       ],

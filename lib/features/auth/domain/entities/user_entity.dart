@@ -1,0 +1,14 @@
+import 'package:flutter/foundation.dart';
+
+@immutable
+class UserEntity {
+  final String id;
+  final String email;
+  final String displayName;
+
+  const UserEntity({
+    required this.id,
+    required this.email,
+    required this.displayName,
+  });
+}

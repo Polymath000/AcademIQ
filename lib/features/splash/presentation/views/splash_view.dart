@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gpa_calculator/core/constants/app_icons.dart';
+
 import '../../../../config/routes/app_routes.dart';
 import '../../../../config/theme/app_colors.dart';
+import '../../../../config/theme/app_text_styles.dart';
 import '../../../../core/constants/constants.dart';
 import '../cubit/splash_cubit.dart';
 import '../cubit/splash_state.dart';
@@ -13,7 +16,8 @@ class SplashView extends StatefulWidget {
   State<SplashView> createState() => _SplashViewState();
 }
 
-class _SplashViewState extends State<SplashView> with SingleTickerProviderStateMixin {
+class _SplashViewState extends State<SplashView>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
@@ -26,13 +30,15 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
       duration: const Duration(milliseconds: 1200),
     );
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 0.8,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     _controller.forward();
     context.read<SplashCubit>().initSplash();
@@ -75,20 +81,25 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           gradient: const LinearGradient(
-                            colors: [AppColors.brandPurple, AppColors.brandIndigo],
+                            colors: [
+                              AppColors.brandPurple,
+                              AppColors.brandIndigo,
+                            ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.brandPurple.withValues(alpha: 0.5),
+                              color: AppColors.brandPurple.withValues(
+                                alpha: 0.5,
+                              ),
                               blurRadius: 24,
                               spreadRadius: 4,
                             ),
                           ],
                         ),
                         child: const Icon(
-                          Icons.school_rounded,
+                          AppIcons.schoolRounded,
                           size: 48,
                           color: Colors.white,
                         ),
@@ -96,17 +107,14 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
                       const SizedBox(height: 24),
                       Text(
                         AppConstants.appName,
-                        style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                        style: AppTextStyles.h2.copyWith(
                           letterSpacing: 1.2,
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         'Track GPA & AI Academic Insights',
-                        style: TextStyle(
+                        style: AppTextStyles.bodyMedium.copyWith(
                           fontSize: 14,
                           color: Colors.white.withValues(alpha: 0.7),
                         ),

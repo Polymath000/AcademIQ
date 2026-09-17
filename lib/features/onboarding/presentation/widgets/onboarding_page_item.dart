@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../config/theme/app_colors.dart';
+import '../../../../config/theme/app_text_styles.dart';
 import '../../../../core/constants/borders.dart';
 import '../../data/models/onboarding_model.dart';
 
@@ -34,20 +35,15 @@ class OnboardingPageItem extends StatelessWidget {
           Text(
             item.title,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+            style: AppTextStyles.h3,
           ),
           const SizedBox(height: 16),
           Text(
             item.description,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 15,
-              color: Colors.white.withValues(alpha: 0.7),
+            style: AppTextStyles.bodyMedium.copyWith(
               height: 1.5,
+              color: Colors.white.withValues(alpha: 0.7),
             ),
           ),
         ],
