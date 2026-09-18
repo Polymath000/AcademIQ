@@ -14,14 +14,14 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<ApiResult<UserEntity>> login(LoginParams params) async {
     try {
-      final credential = await _remoteDataSource.login(params);
-      final user = credential.user;
+      final response = await _remoteDataSource.login(params);
+      final user = response.user;
       if (user != null) {
         return Success(
           UserEntity(
-            id: user.uid,
+            id: user.id,
             email: user.email ?? '',
-            displayName: user.displayName ?? 'User',
+            displayName: user.userMetadata?['full_name'] as String? ?? 'User',
           ),
         );
       } else {
@@ -37,12 +37,12 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<ApiResult<UserEntity>> register(RegisterParams params) async {
     try {
-      final credential = await _remoteDataSource.register(params);
-      final user = credential.user;
+      final response = await _remoteDataSource.register(params);
+      final user = response.user;
       if (user != null) {
         return Success(
           UserEntity(
-            id: user.uid,
+            id: user.id,
             email: user.email ?? '',
             displayName: params.name,
           ),
@@ -70,9 +70,9 @@ class AuthRepositoryImpl implements AuthRepository {
       if (user != null) {
         return Success(
           UserEntity(
-            id: user.uid,
+            id: user.id,
             email: user.email ?? '',
-            displayName: user.displayName ?? 'User',
+            displayName: user.userMetadata?['full_name'] as String? ?? 'User',
           ),
         );
       }

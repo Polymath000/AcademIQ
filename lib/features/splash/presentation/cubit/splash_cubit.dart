@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'splash_state.dart';
 
 class SplashCubit extends Cubit<SplashState> {
-  final FirebaseAuth _firebaseAuth;
+  final SupabaseClient _supabaseClient;
 
-  SplashCubit(this._firebaseAuth) : super(SplashInitial());
+  SplashCubit(this._supabaseClient) : super(SplashInitial());
 
   Future<void> initSplash() async {
     emit(SplashLoading());
@@ -13,7 +13,7 @@ class SplashCubit extends Cubit<SplashState> {
 
     if (isClosed) return;
 
-    final user = _firebaseAuth.currentUser;
+    final user = _supabaseClient.auth.currentUser;
     if (user != null) {
       emit(SplashNavigateToHome());
     } else {

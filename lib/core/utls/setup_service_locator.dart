@@ -1,6 +1,5 @@
 import 'package:get_it/get_it.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../networking/network_info.dart';
@@ -15,16 +14,13 @@ import '../../features/main_layout/presentation/cubit/main_layout_cubit.dart';
 final getit = GetIt.instance;
 
 Future<void> setupServiceLocator() async {
-  getit.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
-  getit.registerLazySingleton<FirebaseFirestore>(
-    () => FirebaseFirestore.instance,
-  );
+  getit.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
 
   getit.registerLazySingleton(() => Connectivity());
   getit.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(getit()));
 
   getit.registerLazySingleton<AuthRemoteDataSource>(
-    () => AuthRemoteDataSourceImpl(getit(), getit(), getit()),
+    () => AuthRemoteDataSourceImpl(getit(), getit()),
   );
 
   getit.registerLazySingleton<AuthRepository>(
