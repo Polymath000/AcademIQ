@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:gpa_calculator/gpa_calculator_app.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'core/utls/setup_service_locator.dart';
+import 'features/settings/data/models/profile_model.dart';
+import 'features/settings/data/models/grading_scale_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +19,11 @@ void main() async {
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
+  // Initialize Hive
+  await Hive.initFlutter();
+  Hive.registerAdapter(ProfileHiveAdapter());
+  Hive.registerAdapter(GradingScaleHiveAdapter());
+  await Hive.openBox<ProfileModel>('settings_box');
 
   await setupServiceLocator();
 

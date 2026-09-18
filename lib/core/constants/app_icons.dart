@@ -19,4 +19,6 @@ class AppIcons {
   static const lockOutline = Icons.lock_outline;
   static const schoolRounded = Icons.school_rounded;
   static const notFound = Icons.explore_off_rounded;
+  static const profile = FontAwesomeIcons.user;
+  static const errorWarning = FontAwesomeIcons.triangleExclamation;
 }

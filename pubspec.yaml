@@ -24,6 +24,10 @@ dependencies:
   connectivity_plus: ^7.3.1
   supabase_flutter: ^2.17.2
   flutter_dotenv: ^6.0.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  path_provider: ^2.1.6
+  skeletonizer: ^3.0.0
 
 dev_dependencies:
   flutter_test:

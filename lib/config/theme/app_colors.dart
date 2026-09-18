@@ -18,4 +18,17 @@ class AppColors {
   // Navigation
   static const Color navBarBg = Color(0xFF1A1626);
   static const Color inactive = Color(0x80FFFFFF); // white 50%
+
+  // Surfaces & Borders
+  static const Color surfaceDark = Color(0x0DFFFFFF); // white 5%
+  static const Color border = Color(0x1AFFFFFF); // white 10%
+
+  // Text Colors
+  static const Color textPrimary = Color(0xFFFFFFFF);
+  static const Color textSecondary = Color(0xB3FFFFFF); // white 70%
+  static const Color textMuted = Color(0x99FFFFFF); // white 60%
+
+  // Status
+  static const Color error = Color(0xFFFF5252);
+  static const Color errorBg = Color(0x1AFF5252);
 }
