@@ -18,4 +18,5 @@ class AppIcons {
   static const emailOutline = Icons.email_outlined;
   static const lockOutline = Icons.lock_outline;
   static const schoolRounded = Icons.school_rounded;
+  static const notFound = Icons.explore_off_rounded;
 }

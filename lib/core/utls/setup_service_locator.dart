@@ -10,6 +10,7 @@ import '../../features/auth/data/datasources/auth_remote_data_source.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
+import '../../features/main_layout/presentation/cubit/main_layout_cubit.dart';
 
 final getit = GetIt.instance;
 
@@ -33,4 +34,5 @@ Future<void> setupServiceLocator() async {
   getit.registerFactory<SplashCubit>(() => SplashCubit(getit()));
   getit.registerFactory<OnboardingCubit>(() => OnboardingCubit());
   getit.registerFactory<AuthCubit>(() => AuthCubit(authRepository: getit()));
+  getit.registerFactory<MainLayoutCubit>(() => MainLayoutCubit());
 }
