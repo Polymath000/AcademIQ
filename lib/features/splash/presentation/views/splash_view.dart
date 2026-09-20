@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gpa_calculator/core/constants/app_icons.dart';
+import 'package:gpa_calculator/config/theme/app_icons.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../config/theme/app_colors.dart';
@@ -107,9 +107,7 @@ class _SplashViewState extends State<SplashView>
                       const SizedBox(height: 24),
                       Text(
                         AppConstants.appName,
-                        style: AppTextStyles.h2.copyWith(
-                          letterSpacing: 1.2,
-                        ),
+                        style: AppTextStyles.h2.copyWith(letterSpacing: 1.2),
                       ),
                       const SizedBox(height: 8),
                       Text(

@@ -7,4 +7,6 @@ class AppConstants {
   static const String semestersBoxName = "semesters_box";
   static const String subjectsBoxName = "subjects_box";
   static const String syncQueueBoxName = "sync_queue_box";
+  static const String aiUrl = "https://openrouter.ai/api/v1/chat/completions";
+  static const String aiModel = "meta-llama/llama-3.1-8b-instruct:free";
 }

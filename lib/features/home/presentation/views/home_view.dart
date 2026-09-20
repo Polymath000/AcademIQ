@@ -17,45 +17,42 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getit<HomeCubit>()..loadData(),
-      child: Scaffold(
-        backgroundColor: AppColors.transparent,
-        appBar: const HomeAppBar(),
-        body: BlocConsumer<HomeCubit, HomeState>(
-          listener: (context, state) {
-            if (state is HomeError) {
-              if (state.message.toLowerCase().contains('not logged in')) {
-                Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
-              } else {
-                AppSnackBar.show(
-                  context,
-                  message: state.message,
-                  type: SnackBarType.error,
-                );
-              }
-            }
-          },
-          buildWhen: (previous, current) {
-            return current is! HomeError;
-          },
-          builder: (context, state) {
-            if (state is HomeInitial || state is HomeLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (state is HomeLoaded) {
-              return HomeViewBody(
-                cgpa: state.cgpa,
-                maxGpa: state.maxGpa,
-                totalCredits: state.totalCredits,
-                semesters: state.semesters,
+    return Scaffold(
+      backgroundColor: AppColors.transparent,
+      appBar: const HomeAppBar(),
+      body: BlocConsumer<HomeCubit, HomeState>(
+        listener: (context, state) {
+          if (state is HomeError) {
+            if (state.message.toLowerCase().contains('not logged in')) {
+              Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
+            } else {
+              AppSnackBar.show(
+                context,
+                message: state.message,
+                type: SnackBarType.error,
               );
             }
+          }
+        },
+        buildWhen: (previous, current) {
+          return current is! HomeError;
+        },
+        builder: (context, state) {
+          if (state is HomeInitial || state is HomeLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            return const SizedBox.shrink();
-          },
-        ),
+          if (state is HomeLoaded) {
+            return HomeViewBody(
+              cgpa: state.cgpa,
+              maxGpa: state.maxGpa,
+              totalCredits: state.totalCredits,
+              semesters: state.semesters,
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
       ),
     );
   }

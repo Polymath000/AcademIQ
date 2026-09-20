@@ -1,3 +1,7 @@
+import 'package:flutter/foundation.dart';
+
+import 'core/networking/supabase_interceptor.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gpa_calculator/core/constants/constants.dart';
@@ -28,6 +32,7 @@ void main() async {
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+    httpClient: kDebugMode ? SupabaseInterceptor() : null,
   );
   await Hive.initFlutter();
   if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(ProfileHiveAdapter());
@@ -43,7 +48,9 @@ void main() async {
     try {
       await Hive.openBox<T>(name);
     } catch (e) {
-      await Hive.deleteBoxFromDisk(name);
+      try {
+        await Hive.deleteBoxFromDisk(name);
+      } catch (_) {}
       await Hive.openBox<T>(name);
     }
   }

@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../../config/routes/app_routes.dart';
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_text_styles.dart';
-import '../../../../core/constants/app_icons.dart';
+import '../../../../config/theme/app_icons.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../cubit/auth_cubit.dart';
 import 'auth_text_field.dart';
@@ -35,10 +35,10 @@ class _RegisterFormState extends State<RegisterForm> {
   void _onRegister() {
     if (_formKey.currentState!.validate()) {
       context.read<AuthCubit>().register(
-            _nameController.text.trim(),
-            _emailController.text.trim(),
-            _passwordController.text,
-          );
+        _nameController.text.trim(),
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
     }
   }
 
@@ -128,31 +128,19 @@ class _RegisterFormState extends State<RegisterForm> {
           const SizedBox(height: 32),
 
           // Register Button
-          AppButton(
-            text: 'Register',
-            onPressed: _onRegister,
-          ),
+          AppButton(text: 'Register', onPressed: _onRegister),
           const SizedBox(height: 24),
 
           // Login Link
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                'Already have an account?',
-                style: AppTextStyles.bodyMedium,
-              ),
+              Text('Already have an account?', style: AppTextStyles.bodyMedium),
               TextButton(
                 onPressed: () {
-                  Navigator.pushReplacementNamed(
-                    context,
-                    AppRoutes.login,
-                  );
+                  Navigator.pushReplacementNamed(context, AppRoutes.login);
                 },
-                child: Text(
-                  'Log In',
-                  style: AppTextStyles.link,
-                ),
+                child: Text('Log In', style: AppTextStyles.link),
               ),
             ],
           ),

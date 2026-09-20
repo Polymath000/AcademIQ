@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_text_styles.dart';
-import '../constants/app_icons.dart';
+import '../../config/theme/app_icons.dart';
 import 'app_button.dart';
 
 class AppErrorWidget extends StatelessWidget {
   final String? message;
   final VoidCallback? onRetry;
 
-  const AppErrorWidget({
-    super.key,
-    this.message,
-    this.onRetry,
-  });
+  const AppErrorWidget({super.key, this.message, this.onRetry});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +49,7 @@ class AppErrorWidget extends StatelessWidget {
                   foregroundColor: AppColors.bgDark,
                 ),
               ),
-            ]
+            ],
           ],
         ),
       ),

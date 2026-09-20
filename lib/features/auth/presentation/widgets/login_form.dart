@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gpa_calculator/config/theme/app_colors.dart';
 import 'package:gpa_calculator/config/theme/app_text_styles.dart';
-import 'package:gpa_calculator/core/constants/app_icons.dart';
+import 'package:gpa_calculator/config/theme/app_icons.dart';
 import 'package:gpa_calculator/core/widgets/app_button.dart';
 import 'package:gpa_calculator/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:gpa_calculator/features/auth/presentation/widgets/auth_text_field.dart';
@@ -111,10 +111,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           const SizedBox(height: 32),
 
-          AppButton(
-            text: 'Log In',
-            onPressed: _onLogin,
-          ),
+          AppButton(text: 'Log In', onPressed: _onLogin),
           const SizedBox(height: 24),
 
           RegisterLink(),

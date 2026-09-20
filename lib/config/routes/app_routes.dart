@@ -1,10 +1,14 @@
+import 'package:gpa_calculator/config/theme/app_icons.dart';
+
+import '../../features/home/presentation/cubit/home_cubit.dart';
+import '../../features/settings/presentation/cubit/settings_cubit.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/utls/setup_service_locator.dart';
 import '../../core/widgets/app_button.dart';
 import '../theme/app_colors.dart';
-import '../theme/app_icons.dart';
 import '../theme/app_text_styles.dart';
 import '../../features/splash/presentation/cubit/splash_cubit.dart';
 import '../../features/splash/presentation/views/splash_view.dart';
@@ -57,8 +61,18 @@ sealed class AppRoutes {
         );
       case home:
         return _fadeRoute(
-          BlocProvider<MainLayoutCubit>(
-            create: (_) => getit<MainLayoutCubit>(),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider<MainLayoutCubit>(
+                create: (_) => getit<MainLayoutCubit>(),
+              ),
+              BlocProvider<HomeCubit>(
+                create: (_) => getit<HomeCubit>()..loadData(),
+              ),
+              BlocProvider<SettingsCubit>(
+                create: (_) => getit<SettingsCubit>()..loadSettings(),
+              ),
+            ],
             child: const MainLayoutView(),
           ),
         );

@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gpa_calculator/features/ai_advisor/presentation/widgets/ai_advisor_view_body.dart';
 
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_text_styles.dart';
+import '../cubit/ai_advisor_cubit.dart';
+
+import '../../../../core/utls/setup_service_locator.dart';
 
 class AiAdvisorView extends StatelessWidget {
   const AiAdvisorView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.bgDark,
-      body: Center(
-        child: Text('AI Advisor', style: AppTextStyles.h2),
+    return BlocProvider(
+      create: (context) => getit<AiAdvisorCubit>(),
+      child: Scaffold(
+        backgroundColor: AppColors.bgDark,
+        appBar: AppBar(
+          backgroundColor: AppColors.navBarBg,
+          title: Text('AI Academic Advisor', style: AppTextStyles.h2),
+          centerTitle: true,
+        ),
+        body: const AiAdvisorViewBody(),
       ),
     );
   }

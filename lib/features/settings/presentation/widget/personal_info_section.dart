@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gpa_calculator/config/theme/app_colors.dart';
 import 'package:gpa_calculator/config/theme/app_text_styles.dart';
-import 'package:gpa_calculator/core/constants/app_icons.dart';
+import 'package:gpa_calculator/config/theme/app_icons.dart';
 import 'package:gpa_calculator/features/settings/data/models/profile_model.dart';
 
 class PersonalInfoSection extends StatelessWidget {

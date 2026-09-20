@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart';
+import '../networking/supabase_interceptor.dart';
 import 'package:flutter/widgets.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 import '../../core/utls/setup_service_locator.dart';
 import '../../features/settings/data/models/profile_model.dart';
 import '../../features/settings/data/models/grading_scale_model.dart';
@@ -17,29 +20,39 @@ void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     try {
       WidgetsFlutterBinding.ensureInitialized();
-      
-      // Initialize Hive in the background isolate
-      await Hive.initFlutter();
-      
-      // Register all adapters needed by the DI container
-      if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(ProfileHiveAdapter());
-      if (!Hive.isAdapterRegistered(4)) Hive.registerAdapter(GradingScaleHiveAdapter());
-      if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(SemesterHiveAdapter());
-      if (!Hive.isAdapterRegistered(2)) Hive.registerAdapter(SubjectHiveAdapter());
-      if (!Hive.isAdapterRegistered(3)) Hive.registerAdapter(SyncActionHiveAdapter());
 
-      // Initialize Supabase in background using dotenv
+      await Hive.initFlutter();
+
+      if (!Hive.isAdapterRegistered(0)) {
+        Hive.registerAdapter(ProfileHiveAdapter());
+      }
+      if (!Hive.isAdapterRegistered(4)) {
+        Hive.registerAdapter(GradingScaleHiveAdapter());
+      }
+      if (!Hive.isAdapterRegistered(1)) {
+        Hive.registerAdapter(SemesterHiveAdapter());
+      }
+      if (!Hive.isAdapterRegistered(2)) {
+        Hive.registerAdapter(SubjectHiveAdapter());
+      }
+      if (!Hive.isAdapterRegistered(3)) {
+        Hive.registerAdapter(SyncActionHiveAdapter());
+      }
+
       await dotenv.load(fileName: ".env");
       await Supabase.initialize(
         url: dotenv.env['SUPABASE_URL']!,
         anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+        httpClient: kDebugMode ? SupabaseInterceptor() : null,
       );
 
       Future<void> openHiveBox<T>(String name) async {
         try {
           await Hive.openBox<T>(name);
         } catch (e) {
-          await Hive.deleteBoxFromDisk(name);
+          try {
+            await Hive.deleteBoxFromDisk(name);
+          } catch (_) {}
           await Hive.openBox<T>(name);
         }
       }
@@ -49,16 +62,14 @@ void callbackDispatcher() {
       await openHiveBox<SubjectModel>('subjects_box');
       await openHiveBox<SyncActionModel>('sync_queue_box');
 
-      // Setup dependency injection
       await setupServiceLocator();
 
-      // Execute the sync queue
       final homeRepository = getit<HomeRepository>();
       await homeRepository.processSyncQueue();
-      
-      return Future.value(true);
+
+      return await Future.value(true);
     } catch (e) {
-      return Future.value(false);
+      return await Future.value(false);
     }
   });
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gpa_calculator/config/theme/app_icons.dart';
 import 'package:gpa_calculator/core/constants/borders.dart';
 
 import '../../../../config/theme/app_colors.dart';
-import '../../../../config/theme/app_icons.dart';
 import '../../../../config/theme/app_images.dart';
 import '../../../home/presentation/views/home_view.dart';
 import '../../../ai_advisor/presentation/views/ai_advisor_view.dart';

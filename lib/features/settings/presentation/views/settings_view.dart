@@ -25,10 +25,7 @@ class SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getit<SettingsCubit>()..loadSettings(),
-      child: const _SettingsBody(),
-    );
+    return const _SettingsBody();
   }
 }
 
