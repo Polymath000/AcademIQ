@@ -15,9 +15,16 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset(AppImages.appLogo, width: 32, height: 32),
+          Image.asset(AppImages.appLogo, width: 40, height: 40),
           const SizedBox(width: 8),
-          const Text(AppConstants.appName),
+          const Text(
+            AppConstants.appName,
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ],
       ),
     );

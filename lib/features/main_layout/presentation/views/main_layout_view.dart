@@ -24,7 +24,7 @@ class MainLayoutView extends StatelessWidget {
             color: AppColors.bgDark,
             gradient: LinearGradient(
               colors: [
-                AppColors.gradeWeak.withValues(alpha: 0.15),
+                AppColors.gradeWeak.withValues(alpha: 0.2),
                 AppColors.brandIndigo.withValues(alpha: 0.1),
               ],
               begin: Alignment.topLeft,

@@ -11,11 +11,11 @@ class AppTheme {
       colorScheme: const ColorScheme.dark(
         primary: AppColors.brandPurple,
         secondary: AppColors.brandAccent,
-        surface: Color(0xFF130F1C),
+        surface: AppColors.surfaceThemeDark,
       ),
       textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
       appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.transparent,
         elevation: 0,
       ),
     );
@@ -29,13 +29,13 @@ class AppTheme {
       colorScheme: const ColorScheme.light(
         primary: AppColors.brandPurple,
         secondary: AppColors.brandAccent,
-        surface: Colors.white,
+        surface: AppColors.white,
       ),
       textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme),
       appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.transparent,
         elevation: 0,
-        foregroundColor: Colors.black,
+        foregroundColor: AppColors.black,
       ),
     );
   }

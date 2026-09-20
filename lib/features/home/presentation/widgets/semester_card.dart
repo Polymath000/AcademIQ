@@ -1,170 +1,78 @@
-import '../../../../config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gpa_calculator/features/home/presentation/widgets/semester_card_actions.dart';
+import 'package:gpa_calculator/features/home/presentation/widgets/semester_header.dart';
 
+import '../../../../config/theme/app_colors.dart';
 import '../../domain/entities/semester_entity.dart';
-import '../../data/models/subject_model.dart';
 import '../cubit/home_cubit.dart';
+import '../../../settings/presentation/cubit/settings_cubit.dart';
+import '../../../settings/presentation/cubit/settings_state.dart';
+import 'subject_list_item.dart';
+import '../utils/semester_utils.dart';
 
 class SemesterCard extends StatelessWidget {
   final SemesterEntity semesterEntity;
 
-  const SemesterCard({
-    super.key,
-    required this.semesterEntity,
-  });
-
-  void _showAddSubjectDialog(BuildContext context, HomeCubit cubit) {
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController creditsController = TextEditingController();
-    final TextEditingController gradeController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Add Subject'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(labelText: 'Subject Name'),
-              ),
-              TextField(
-                controller: creditsController,
-                decoration: const InputDecoration(labelText: 'Credits (e.g. 3)'),
-                keyboardType: TextInputType.number,
-              ),
-              TextField(
-                controller: gradeController,
-                decoration: const InputDecoration(labelText: 'Grade (e.g. A+)'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final name = nameController.text.trim();
-                final credits = int.tryParse(creditsController.text.trim()) ?? 0;
-                final grade = gradeController.text.trim().toUpperCase();
-
-                if (name.isNotEmpty && credits > 0 && grade.isNotEmpty) {
-                  final newSubject = SubjectModel(
-                    id: const Uuid().v4(),
-                    semesterId: semesterEntity.semester.id,
-                    userId: semesterEntity.semester.userId,
-                    name: name,
-                    credits: credits,
-                    gradeLetter: grade,
-                    createdAt: DateTime.now(),
-                  );
-                  cubit.addSubject(newSubject);
-                  Navigator.of(context).pop();
-                }
-              },
-              child: const Text('Add'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  const SemesterCard({super.key, required this.semesterEntity});
 
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<HomeCubit>();
+    final settingsCubit = context.read<SettingsCubit>();
 
-    return Card(
+    final scale = settingsCubit.state is SettingsLoaded
+        ? (settingsCubit.state as SettingsLoaded).profile.gradingScale
+        : [];
+
+    final double semGpa = SemesterUtils.calculateSemesterGpa(
+      semesterEntity,
+      scale.cast(),
+    );
+
+    return Container(
       margin: const EdgeInsets.only(bottom: 16.0),
-      child: ExpansionTile(
-        title: Text(
-          semesterEntity.semester.name,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        trailing: IconButton(
-          icon: const Icon(Icons.delete, color: AppColors.error),
-          onPressed: () {
-            // Confirm deletion
-            showDialog(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                title: const Text('Delete Semester'),
-                content: const Text('Are you sure you want to delete this semester and all its subjects?'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(ctx),
-                    child: const Text('Cancel'),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-                    onPressed: () {
-                      cubit.deleteSemester(semesterEntity.semester.id);
-                      Navigator.pop(ctx);
-                    },
-                    child: const Text('Delete'),
-                  ),
-                ],
+      decoration: BoxDecoration(
+        color: AppColors.semesterCardBg,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+      ),
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          title: SemesterHeader(semester: semesterEntity, gpa: semGpa),
+          iconColor: AppColors.textMuted,
+          collapsedIconColor: AppColors.textMuted,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Divider(color: Colors.white.withValues(alpha: 0.1)),
+            ),
+            if (semesterEntity.subjects.isEmpty)
+              const Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Text(
+                  'No courses added yet.',
+                  style: TextStyle(color: AppColors.textMuted),
+                ),
+              )
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
+                itemCount: semesterEntity.subjects.length,
+                itemBuilder: (context, index) {
+                  return SubjectListItem(
+                    subject: semesterEntity.subjects[index],
+                    cubit: cubit,
+                  );
+                },
               ),
-            );
-          },
+            SemesterCardActions(semesterEntity: semesterEntity, cubit: cubit),
+          ],
         ),
-        children: [
-          if (semesterEntity.subjects.isEmpty)
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text('No subjects added yet.'),
-            )
-          else
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: semesterEntity.subjects.length,
-              itemBuilder: (context, index) {
-                final subject = semesterEntity.subjects[index];
-                return ListTile(
-                  title: Text(subject.name),
-                  subtitle: Text('${subject.credits} Credits'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          subject.gradeLetter,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.close, size: 20),
-                        onPressed: () => cubit.deleteSubject(subject.id),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextButton.icon(
-              onPressed: () => _showAddSubjectDialog(context, cubit),
-              icon: const Icon(Icons.add),
-              label: const Text('Add Subject'),
-            ),
-          ),
-        ],
       ),
     );
   }
