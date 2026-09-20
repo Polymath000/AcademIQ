@@ -4,7 +4,7 @@
 
 ## 🎥 Demo
 
-<video src="ReadmeAssets/demo.mp4" width="300" controls></video>
+<video src="https://github.com/Polymath000/AcademIQ/raw/main/ReadmeAssets/demo.mp4" width="300" controls></video>
 
 ## 🚀 Try the App
 Want to see AcademIQ in action? You can download the fully built, production-ready application directly from the **[Releases](../../releases)** page. Simply download the latest `.apk` file to your Android device, install it, and experience the smooth, offline-first performance and premium dark UI instantly.
