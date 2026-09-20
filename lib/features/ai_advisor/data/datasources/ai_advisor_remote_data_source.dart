@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:gpa_calculator/core/constants/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -11,8 +12,8 @@ abstract class AiAdvisorRemoteDataSource {
 
 class AiAdvisorRemoteDataSourceImpl implements AiAdvisorRemoteDataSource {
   final SupabaseClient _supabaseClient;
-  static const String _model = 'google/gemma-4-31b-it:free';
-  static const String _url = 'https://openrouter.ai/api/v1/chat/completions';
+  static const String _model = AppConstants.aiModel;
+  static const String _url = AppConstants.aiUrl;
 
   AiAdvisorRemoteDataSourceImpl(this._supabaseClient);
 

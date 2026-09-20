@@ -1,3 +1,4 @@
+import 'show_edit_subject_dialog.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../config/theme/app_colors.dart';
@@ -84,6 +85,19 @@ class SubjectListItem extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
+              IconButton(
+                padding: const EdgeInsets.all(4),
+                constraints: const BoxConstraints(),
+                icon: const Icon(
+                  Icons.edit,
+                  size: 20,
+                  color: AppColors.textMuted,
+                ),
+                onPressed: () {
+                  showEditSubjectDialog(context, cubit, subject);
+                },
+              ),
+              const SizedBox(width: 4),
               IconButton(
                 padding: const EdgeInsets.all(4),
                 constraints: const BoxConstraints(),

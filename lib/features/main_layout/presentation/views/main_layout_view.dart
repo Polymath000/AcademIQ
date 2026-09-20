@@ -13,7 +13,7 @@ import '../cubit/main_layout_cubit.dart';
 class MainLayoutView extends StatelessWidget {
   const MainLayoutView({super.key});
 
-  static const _screens = <Widget>[AiAdvisorView(), HomeView(), SettingsView()];
+
 
   @override
   Widget build(BuildContext context) {
@@ -50,10 +50,11 @@ class MainLayoutView extends StatelessWidget {
                   ),
                 );
               },
-              child: KeyedSubtree(
-                key: ValueKey<int>(currentIndex),
-                child: _screens[currentIndex],
-              ),
+              child: currentIndex == 0
+                  ? const AiAdvisorView(key: ValueKey(0))
+                  : currentIndex == 1
+                      ? const HomeView(key: ValueKey(1))
+                      : const SettingsView(key: ValueKey(2)),
             ),
             floatingActionButton: SizedBox(
               width: 64,
@@ -176,9 +177,8 @@ class _NavItemState extends State<_NavItem>
     super.dispose();
   }
 
-  void _handleTap() async {
-    await _controller.forward();
-    await _controller.reverse();
+  void _handleTap() {
+    _controller.forward().then((_) => _controller.reverse());
     widget.onTap();
   }
 

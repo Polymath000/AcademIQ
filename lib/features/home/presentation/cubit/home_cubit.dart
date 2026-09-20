@@ -137,6 +137,20 @@ class HomeCubit extends Cubit<HomeState> {
     );
   }
 
+  Future<void> updateSubject(SubjectModel subject) async {
+    if (state is! HomeLoaded) return;
+    final result = await _manageSubjectUseCase.update(subject);
+    result.when(
+      success: (_) async {
+        await _fetchDataForUser(_currentUserId!);
+      },
+      failure: (failure) {
+        emit(HomeError(failure.message));
+        _fetchDataForUser(_currentUserId!);
+      },
+    );
+  }
+
   Future<void> addSubject(SubjectModel subject) async {
     if (_currentUserId == null || state is! HomeLoaded) return;
 

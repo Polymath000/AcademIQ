@@ -8,5 +8,5 @@ class AppConstants {
   static const String subjectsBoxName = "subjects_box";
   static const String syncQueueBoxName = "sync_queue_box";
   static const String aiUrl = "https://openrouter.ai/api/v1/chat/completions";
-  static const String aiModel = "nvidia/nemotron-3-super:free";
+  static const String aiModel = "openrouter/free";
 }

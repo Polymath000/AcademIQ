@@ -19,6 +19,12 @@ class AiAdvisorCubit extends Cubit<AiAdvisorState> {
       return;
     }
 
+    bool hasAnyCourse = semesters.any((sem) => sem.subjects.isNotEmpty);
+    if (!hasAnyCourse) {
+      emit(AiAdvisorError('You have no subjects to analyze. Please add some courses first.'));
+      return;
+    }
+
     emit(AiAdvisorLoading());
 
     final result = await _getAiAnalysisUseCase.call(profile, semesters);

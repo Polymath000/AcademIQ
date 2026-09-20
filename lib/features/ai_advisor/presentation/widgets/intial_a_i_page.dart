@@ -1,9 +1,8 @@
+import '../utils/ai_request_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gpa_calculator/config/theme/app_colors.dart';
 import 'package:gpa_calculator/config/theme/app_icons.dart';
 import 'package:gpa_calculator/config/theme/app_text_styles.dart';
-import 'package:gpa_calculator/features/ai_advisor/presentation/cubit/ai_advisor_cubit.dart';
 import 'package:gpa_calculator/features/home/domain/entities/semester_entity.dart';
 import 'package:gpa_calculator/features/settings/data/models/profile_model.dart';
 
@@ -56,12 +55,7 @@ class IntialAIPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              onPressed: (profile.isQuotaFinished)
-                  ? null
-                  : () => context.read<AiAdvisorCubit>().generateAnalysis(
-                      profile,
-                      semesters,
-                    ),
+              onPressed: (profile.isQuotaFinished) ? null : () => requestAiAnalysis(context, profile, semesters),
               icon: const Icon(AppIcons.aiAdvisor),
               label: const Text(
                 'Generate AI Analysis',
