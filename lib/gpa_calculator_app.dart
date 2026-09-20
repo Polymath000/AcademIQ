@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:gpa_calculator/config/routes/app_routes.dart';
 import 'package:gpa_calculator/config/theme/app_theme.dart';
 import 'package:gpa_calculator/core/constants/constants.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'dart:async';
 
