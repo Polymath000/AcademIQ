@@ -1,3 +1,4 @@
+import 'package:hive/hive.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/models/onboarding_model.dart';
@@ -18,7 +19,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     ),
     OnboardingItem(
       title: 'AI Academic Advisor',
-      description: 'Get instant AI analysis powered by Groq Cloud to boost your grades and optimize course loads.',
+      description: 'Get instant AI analysis to boost your grades and optimize course loads.',
       icon: AppIcons.chatBubble,
     ),
     OnboardingItem(
@@ -34,6 +35,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   }
 
   void completeOnboarding() {
+    Hive.box('prefs').put('hasSeenOnboarding', true);
     emit(OnboardingCompletedState());
   }
 }

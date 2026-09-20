@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:gpa_calculator/config/routes/app_routes.dart';
 import 'package:gpa_calculator/config/theme/app_theme.dart';
 import 'package:gpa_calculator/core/constants/constants.dart';
+
 import 'dart:async';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -20,7 +21,9 @@ class _GpaCalculatorAppState extends State<GpaCalculatorApp> {
   @override
   void initState() {
     super.initState();
-    _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+    _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((
+      data,
+    ) {
       final AuthChangeEvent event = data.event;
       if (event == AuthChangeEvent.signedOut) {
         navigatorKey.currentState?.pushNamedAndRemoveUntil(

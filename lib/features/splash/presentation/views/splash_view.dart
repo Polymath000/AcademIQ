@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gpa_calculator/config/theme/app_icons.dart';
+import 'package:gpa_calculator/config/theme/app_images.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../config/theme/app_colors.dart';
@@ -98,10 +98,12 @@ class _SplashViewState extends State<SplashView>
                             ),
                           ],
                         ),
-                        child: const Icon(
-                          AppIcons.schoolRounded,
-                          size: 48,
-                          color: Colors.white,
+                        child: Center(
+                          child: Image.asset(
+                            AppImages.appLogo,
+                            width: 60,
+                            height: 60,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 24),

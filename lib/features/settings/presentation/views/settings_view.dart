@@ -45,7 +45,7 @@ class _SettingsBody extends StatelessWidget {
                 type: SnackBarType.error,
               );
             } else if (state is SettingsLoggedOut) {
-              Navigator.of(context).pushReplacementNamed(AppRoutes.onboarding);
+              Navigator.of(context).pushReplacementNamed(AppRoutes.login);
             }
           },
           builder: (context, state) {

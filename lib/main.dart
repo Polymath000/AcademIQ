@@ -59,6 +59,7 @@ void main() async {
   await openHiveBox<SemesterModel>(AppConstants.semestersBoxName);
   await openHiveBox<SubjectModel>(AppConstants.subjectsBoxName);
   await openHiveBox<SyncActionModel>(AppConstants.syncQueueBoxName);
+  await openHiveBox<dynamic>('prefs');
 
   await setupServiceLocator();
 

@@ -14,8 +14,20 @@ class RegisterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.bgDark,
+return Container(
+      decoration: BoxDecoration(
+        color: AppColors.bgDark,
+        gradient: LinearGradient(
+          colors: [
+            AppColors.gradeWeak.withValues(alpha: 0.2),
+            AppColors.brandIndigo.withValues(alpha: 0.1),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: AppColors.transparent,
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
@@ -54,6 +66,7 @@ class RegisterView extends StatelessWidget {
             ],
           );
         },
+      ),
       ),
     );
   }

@@ -1,5 +1,7 @@
+import 'package:hive/hive.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'splash_state.dart';
 
 class SplashCubit extends Cubit<SplashState> {
@@ -17,7 +19,14 @@ class SplashCubit extends Cubit<SplashState> {
     if (user != null) {
       emit(SplashNavigateToHome());
     } else {
-      emit(SplashNavigateToLogin());
+      final hasSeenOnboarding = Hive.box(
+        'prefs',
+      ).get('hasSeenOnboarding', defaultValue: false) as bool;
+      if (!hasSeenOnboarding) {
+        emit(SplashNavigateToOnboarding());
+      } else {
+        emit(SplashNavigateToLogin());
+      }
     }
   }
 }
