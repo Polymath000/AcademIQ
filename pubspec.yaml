@@ -17,7 +17,7 @@ dependencies:
   url_launcher: ^6.3.1
   google_fonts: ^6.2.1
   cupertino_icons: ^1.0.8
-  uuid: ^4.5.1
+  uuid: ^4.6.0
   flutter_bloc: ^9.1.1
   equatable: ^3.0.0
   font_awesome_flutter: ^11.0.0
@@ -28,6 +28,7 @@ dependencies:
   hive_flutter: ^1.1.0
   path_provider: ^2.1.6
   skeletonizer: ^3.0.0
+  workmanager: ^0.10.10
 
 dev_dependencies:
   flutter_test:

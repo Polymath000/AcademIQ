@@ -26,7 +26,8 @@ class AuthRepositoryImpl implements AuthRepository {
         );
       } else {
         return FailureResult(
-          ApiErrorHandler.handle('User is null').toFailure(),
+          ApiErrorHandler.handle('There\'s an error, Please try again.')
+              .toFailure(),
         );
       }
     } catch (e) {

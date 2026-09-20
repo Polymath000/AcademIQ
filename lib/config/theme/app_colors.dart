@@ -5,6 +5,7 @@ class AppColors {
   static const Color brandPurple = Color(0xFF6236FF);
   static const Color brandIndigo = Color(0xFF3B00E5);
   static const Color brandAccent = Color(0xFF00FFC2);
+  static const Color transparent = Colors.transparent;
 
   // Backgrounds
   static const Color bgDark = Color(0xFF0D0A14);

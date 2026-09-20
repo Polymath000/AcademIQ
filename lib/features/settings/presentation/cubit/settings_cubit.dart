@@ -1,3 +1,5 @@
+import '../../../../config/routes/app_routes.dart';
+import '../../../../gpa_calculator_app.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/usecases/get_profile_usecase.dart';
@@ -39,6 +41,10 @@ class SettingsCubit extends Cubit<SettingsState> {
           );
         } else {
           emit(const SettingsError('User not logged in'));
+          navigatorKey.currentState?.pushNamedAndRemoveUntil(
+            AppRoutes.login,
+            (route) => false,
+          );
         }
       },
       failure: (error) {

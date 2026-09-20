@@ -50,7 +50,7 @@ class MainLayoutView extends StatelessWidget {
               onPressed: () => context.read<MainLayoutCubit>().changeTab(1),
               shape: const CircleBorder(),
               elevation: 8,
-              backgroundColor: Colors.transparent,
+              backgroundColor: AppColors.transparent,
               child: Container(
                 width: 64,
                 height: 64,
@@ -175,7 +175,7 @@ class _NavItemState extends State<_NavItem>
                 decoration: BoxDecoration(
                   color: widget.isSelected
                       ? AppColors.brandAccent.withValues(alpha: 0.1)
-                      : Colors.transparent,
+                      : AppColors.transparent,
                   borderRadius: AppBorders.xxxs,
                 ),
                 child: Icon(

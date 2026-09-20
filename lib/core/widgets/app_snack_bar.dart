@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_text_styles.dart';
 
@@ -65,11 +66,7 @@ class AppSnackBar {
                 color: config.color.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(
-                config.icon,
-                color: config.color,
-                size: 20,
-              ),
+              child: Icon(config.icon, color: config.color, size: 20),
             ),
             const SizedBox(width: 12),
             // ── Message ──
@@ -108,20 +105,20 @@ class AppSnackBar {
   static _SnackBarConfig _configFor(SnackBarType type) {
     return switch (type) {
       SnackBarType.error => const _SnackBarConfig(
-          color: AppColors.gradeWeak,
-          icon: Icons.warning_amber_rounded,
-          title: 'ERROR',
-        ),
+        color: AppColors.gradeWeak,
+        icon: Icons.warning_amber_rounded,
+        title: 'ERROR',
+      ),
       SnackBarType.success => const _SnackBarConfig(
-          color: AppColors.brandAccent,
-          icon: Icons.check_circle_outline_rounded,
-          title: 'SUCCESS',
-        ),
+        color: AppColors.brandAccent,
+        icon: Icons.check_circle_outline_rounded,
+        title: 'SUCCESS',
+      ),
       SnackBarType.info => const _SnackBarConfig(
-          color: AppColors.brandPurple,
-          icon: Icons.info_outline_rounded,
-          title: 'INFO',
-        ),
+        color: AppColors.brandPurple,
+        icon: Icons.info_outline_rounded,
+        title: 'INFO',
+      ),
     };
   }
 }

@@ -34,7 +34,7 @@ class GradingScaleModel {
 
 class GradingScaleHiveAdapter extends TypeAdapter<GradingScaleModel> {
   @override
-  final int typeId = 1;
+  final int typeId = 4;
 
   @override
   GradingScaleModel read(BinaryReader reader) {
