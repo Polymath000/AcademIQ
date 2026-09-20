@@ -1,4 +1,5 @@
 import '../../../../config/routes/app_routes.dart';
+
 import 'package:gpa_calculator/features/home/presentation/widgets/home_view_body.dart';
 
 import '../widgets/home_app_bar.dart';
@@ -24,7 +25,8 @@ class HomeView extends StatelessWidget {
         listener: (context, state) {
           if (state is HomeError) {
             if (state.message.toLowerCase().contains('not logged in')) {
-              Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
+              Navigator.of(context)
+                  .pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
             } else {
               AppSnackBar.show(
                 context,

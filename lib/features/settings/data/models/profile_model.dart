@@ -1,5 +1,5 @@
-import 'package:gpa_calculator/core/constants/constants.dart';
 import 'package:hive/hive.dart';
+
 import 'grading_scale_model.dart';
 
 class ProfileModel {
@@ -54,8 +54,11 @@ class ProfileModel {
       totalCredits: json['total_credits'] as int? ?? 0,
       aiUsageCount: json['ai_usage_count'] as int? ?? 0,
       isQuotaFinished: json['is_quota_finished'] as bool? ?? false,
-      gradingScale: (json['grading_scale'] as List<dynamic>?)
-              ?.map((e) => GradingScaleModel.fromJson(e as Map<String, dynamic>))
+      gradingScale:
+          (json['grading_scale'] as List<dynamic>?)
+              ?.map(
+                (e) => GradingScaleModel.fromJson(e as Map<String, dynamic>),
+              )
               .toList() ??
           [],
     );

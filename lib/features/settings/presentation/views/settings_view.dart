@@ -11,7 +11,6 @@ import '../../data/models/profile_model.dart';
 import '../../data/models/grading_scale_model.dart';
 import '../utils/settings_mocks.dart';
 
-import '../../../../core/utls/setup_service_locator.dart';
 import '../../../../config/routes/app_routes.dart';
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_text_styles.dart';
@@ -35,7 +34,7 @@ class _SettingsBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: AppColors.transparent,
       body: SafeArea(
         child: BlocConsumer<SettingsCubit, SettingsState>(
           listener: (context, state) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_text_styles.dart';
 import '../../../../core/constants/borders.dart';
@@ -19,17 +20,11 @@ class OnboardingPageItem extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.05),
+              color: AppColors.white.withValues(alpha: 0.05),
               borderRadius: AppBorders.l,
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.1),
-              ),
+              border: Border.all(color: AppColors.white.withValues(alpha: 0.1)),
             ),
-            child: Icon(
-              item.icon,
-              size: 72,
-              color: AppColors.brandAccent,
-            ),
+            child: Icon(item.icon, size: 72, color: AppColors.brandAccent),
           ),
           const SizedBox(height: 40),
           Text(
@@ -43,7 +38,7 @@ class OnboardingPageItem extends StatelessWidget {
             textAlign: TextAlign.center,
             style: AppTextStyles.bodyMedium.copyWith(
               height: 1.5,
-              color: Colors.white.withValues(alpha: 0.7),
+              color: AppColors.white.withValues(alpha: 0.7),
             ),
           ),
         ],

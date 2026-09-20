@@ -19,90 +19,116 @@ class MainLayoutView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MainLayoutCubit, int>(
       builder: (context, currentIndex) {
-        return Scaffold(
-          backgroundColor: AppColors.bgDark,
-          extendBody: true,
-          body: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 250),
-            switchInCurve: Curves.easeInOut,
-            switchOutCurve: Curves.easeInOut,
-            transitionBuilder: (child, animation) {
-              return FadeTransition(
-                opacity: animation,
-                child: SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0, 0.05),
-                    end: Offset.zero,
-                  ).animate(animation),
-                  child: child,
-                ),
-              );
-            },
-            child: KeyedSubtree(
-              key: ValueKey<int>(currentIndex),
-              child: _screens[currentIndex],
+        return Container(
+          decoration: BoxDecoration(
+            color: AppColors.bgDark,
+            gradient: LinearGradient(
+              colors: [
+                AppColors.gradeWeak.withValues(alpha: 0.15),
+                AppColors.brandIndigo.withValues(alpha: 0.1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
           ),
-          floatingActionButton: SizedBox(
-            width: 64,
-            height: 64,
-            child: FloatingActionButton(
-              onPressed: () => context.read<MainLayoutCubit>().changeTab(1),
-              shape: const CircleBorder(),
-              elevation: 8,
-              backgroundColor: AppColors.transparent,
-              child: Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: const LinearGradient(
-                    colors: [AppColors.brandPurple, AppColors.brandIndigo],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+          child: Scaffold(
+            backgroundColor: AppColors.transparent,
+            extendBody: true,
+            body: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 250),
+              switchInCurve: Curves.easeInOut,
+              switchOutCurve: Curves.easeInOut,
+              transitionBuilder: (child, animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(0, 0.05),
+                      end: Offset.zero,
+                    ).animate(animation),
+                    child: child,
                   ),
-                  border: Border.all(
-                    color: currentIndex == 1
-                        ? AppColors.brandAccent
-                        : AppColors.brandPurple.withValues(alpha: 0.5),
-                    width: 2.5,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.brandPurple.withValues(alpha: 0.5),
-                      blurRadius: 16,
-                      offset: const Offset(0, 4),
+                );
+              },
+              child: KeyedSubtree(
+                key: ValueKey<int>(currentIndex),
+                child: _screens[currentIndex],
+              ),
+            ),
+            floatingActionButton: SizedBox(
+              width: 64,
+              height: 64,
+              child: FloatingActionButton(
+                onPressed: () => context.read<MainLayoutCubit>().changeTab(1),
+                shape: const CircleBorder(),
+                elevation: 8,
+                backgroundColor: AppColors.transparent,
+                child: Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.brandPurple,
+                        AppColors.brandIndigo.withValues(alpha: 0.8),
+                        AppColors.white.withValues(alpha: 0.1),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Image.asset(AppImages.appLogo, fit: BoxFit.contain),
+                    border: Border.all(
+                      color: currentIndex == 1
+                          ? AppColors.brandAccent.withValues(alpha: 0.5)
+                          : AppColors.brandPurple.withValues(alpha: 0.5),
+                      width: 2.5,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.brandPurple.withValues(alpha: 0.5),
+                        blurRadius: 16,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Image.asset(AppImages.appLogo, fit: BoxFit.contain),
+                  ),
                 ),
               ),
             ),
-          ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
-          bottomNavigationBar: BottomAppBar(
-            color: AppColors.navBarBg,
-            shape: const CircularNotchedRectangle(),
-            height: 64,
-            notchMargin: 8,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _NavItem(
-                  icon: AppIcons.aiAdvisor,
-                  isSelected: currentIndex == 0,
-                  onTap: () => context.read<MainLayoutCubit>().changeTab(0),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.miniCenterDocked,
+            bottomNavigationBar: BottomAppBar(
+              color: AppColors.navBarPlum,
+              shape: const AutomaticNotchedShape(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(48),
+                    bottom: Radius.circular(48),
+                  ),
+                  side: BorderSide(color: AppColors.brandPurple, width: 1.5),
                 ),
-                _NavItem(
-                  icon: AppIcons.settings,
-                  isSelected: currentIndex == 2,
-                  onTap: () => context.read<MainLayoutCubit>().changeTab(2),
-                ),
-              ],
+                CircleBorder(),
+              ),
+              height: 64,
+              notchMargin: 8,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _NavItem(
+                    icon: AppIcons.aiAdvisor,
+                    isSelected: currentIndex == 0,
+                    onTap: () => context.read<MainLayoutCubit>().changeTab(0),
+                  ),
+                  _NavItem(
+                    icon: AppIcons.settings,
+                    isSelected: currentIndex == 2,
+                    onTap: () => context.read<MainLayoutCubit>().changeTab(2),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -173,9 +199,7 @@ class _NavItemState extends State<_NavItem>
                 curve: Curves.easeInOut,
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: widget.isSelected
-                      ? AppColors.brandAccent.withValues(alpha: 0.1)
-                      : AppColors.transparent,
+                  color: AppColors.transparent,
                   borderRadius: AppBorders.xxxs,
                 ),
                 child: Icon(

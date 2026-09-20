@@ -18,6 +18,7 @@ class AppColors {
 
   // Navigation
   static const Color navBarBg = Color(0xFF1A1626);
+  static const Color navBarPlum = Color(0xFF1E1428); // Matches the new gradient
   static const Color inactive = Color(0x80FFFFFF); // white 50%
 
   // Surfaces & Borders
@@ -32,4 +33,5 @@ class AppColors {
   // Status
   static const Color error = Color(0xFFFF5252);
   static const Color errorBg = Color(0x1AFF5252);
+  static const Color white = Color(0xFFFFFFFF);
 }

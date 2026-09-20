@@ -8,7 +8,11 @@ import 'package:gpa_calculator/features/home/domain/entities/semester_entity.dar
 import 'package:gpa_calculator/features/settings/data/models/profile_model.dart';
 
 class IntialAIPage extends StatelessWidget {
-  const new({super.key, required this.profile, required this.semesters});
+  const IntialAIPage({
+    super.key,
+    required this.profile,
+    required this.semesters,
+  });
 
   final ProfileModel profile;
   final List<SemesterEntity> semesters;
@@ -26,7 +30,7 @@ class IntialAIPage extends StatelessWidget {
               size: 80,
               color: AppColors.brandPurple.withValues(alpha: 0.8),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 48),
             Text(
               'Get Personalized Academic Advice',
               style: AppTextStyles.h2,
