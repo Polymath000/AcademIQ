@@ -3,6 +3,7 @@ import '../../features/ai_advisor/domain/repositories/ai_advisor_repository.dart
 import '../../features/ai_advisor/data/repositories/ai_advisor_repository_impl.dart';
 import '../../features/ai_advisor/domain/usecases/get_ai_analysis_usecase.dart';
 import '../../features/ai_advisor/presentation/cubit/ai_advisor_cubit.dart';
+
 import 'package:get_it/get_it.dart';
 import 'package:gpa_calculator/core/constants/constants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -88,9 +89,7 @@ Future<void> setupServiceLocator() async {
     () => AiAdvisorRepositoryImpl(getit(), getit()),
   );
 
-  getit.registerLazySingleton(
-    () => GetAiAnalysisUseCase(getit()),
-  );
+  getit.registerLazySingleton(() => GetAiAnalysisUseCase(getit()));
 
   // UseCases
   getit.registerLazySingleton(() => GetProfileUseCase(getit()));
@@ -100,7 +99,6 @@ Future<void> setupServiceLocator() async {
   getit.registerLazySingleton(() => ManageSemesterUseCase(getit()));
   getit.registerLazySingleton(() => ManageSubjectUseCase(getit()));
   getit.registerLazySingleton(() => CalculateAndSyncCGPAUseCase(getit()));
-  
 
   // Cubits
   getit.registerFactory<SplashCubit>(() => SplashCubit(getit()));
@@ -109,14 +107,12 @@ Future<void> setupServiceLocator() async {
   getit.registerFactory<MainLayoutCubit>(() => MainLayoutCubit());
 
   getit.registerFactory<HomeCubit>(
-    () => HomeCubit(getit(), getit(), getit(), getit(), getit(), getit()),
+    () => HomeCubit(getit(), getit(), getit(), getit(), getit()),
   );
 
   getit.registerFactory<SettingsCubit>(
     () => SettingsCubit(getit(), getit(), getit()),
   );
-  
-  getit.registerFactory<AiAdvisorCubit>(
-    () => AiAdvisorCubit(getit()),
-  );
+
+  getit.registerFactory<AiAdvisorCubit>(() => AiAdvisorCubit(getit()));
 }

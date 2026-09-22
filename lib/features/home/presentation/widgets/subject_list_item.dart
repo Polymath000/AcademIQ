@@ -1,4 +1,6 @@
 import 'show_edit_subject_dialog.dart';
+import '../../../../core/widgets/custom_delete_dialog.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../../../config/theme/app_colors.dart';
@@ -107,36 +109,13 @@ class SubjectListItem extends StatelessWidget {
                   color: AppColors.textMuted,
                 ),
                 onPressed: () {
-                  showDialog(
+                  showCustomDeleteDialog(
                     context: context,
-                    builder: (ctx) => AlertDialog(
-                      backgroundColor: AppColors.navBarBg,
-                      title: const Text('Delete Course'),
-                      content: Text(
-                        'Are you sure you want to delete \${subject.name}?',
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(ctx),
-                          child: const Text('Cancel'),
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.error.withValues(
-                              alpha: 0.9,
-                            ),
-                          ),
-                          onPressed: () {
-                            cubit.deleteSubject(subject.id);
-                            Navigator.pop(ctx);
-                          },
-                          child: const Text(
-                            'Delete',
-                            style: TextStyle(color: AppColors.textPrimary),
-                          ),
-                        ),
-                      ],
-                    ),
+                    title: 'Delete Course',
+                    content: 'Are you sure you want to delete ${subject.name}?',
+                    onDelete: () {
+                      cubit.deleteSubject(subject.id);
+                    },
                   );
                 },
               ),

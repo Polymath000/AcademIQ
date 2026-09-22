@@ -7,6 +7,7 @@ abstract class HomeRepository {
 
   Future<ApiResult<List<SemesterModel>>> getSemesters();
   Future<ApiResult<void>> addSemester(SemesterModel semester);
+  Future<ApiResult<void>> updateSemester(SemesterModel semester);
   Future<ApiResult<void>> deleteSemester(String semesterId);
 
   Future<ApiResult<List<SubjectModel>>> getSubjects();

@@ -2,6 +2,7 @@ import 'package:hive/hive.dart';
 
 class SyncActionTypes {
   static const String addSemester = 'ADD_SEMESTER';
+  static const String updateSemester = 'UPDATE_SEMESTER';
   static const String deleteSemester = 'DELETE_SEMESTER';
   static const String addSubject = 'ADD_SUBJECT';
   static const String updateSubject = 'UPDATE_SUBJECT';

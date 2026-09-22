@@ -16,7 +16,6 @@ class HomeCubit extends Cubit<HomeState> {
   final GetHomeDataUseCase _getHomeDataUseCase;
   final ManageSemesterUseCase _manageSemesterUseCase;
   final ManageSubjectUseCase _manageSubjectUseCase;
-  final CalculateAndSyncCGPAUseCase _calculateAndSyncCGPAUseCase;
   final GetProfileUseCase _getProfileUseCase;
   final AuthRepository _authRepository;
 
@@ -26,7 +25,6 @@ class HomeCubit extends Cubit<HomeState> {
     this._getHomeDataUseCase,
     this._manageSemesterUseCase,
     this._manageSubjectUseCase,
-    this._calculateAndSyncCGPAUseCase,
     this._getProfileUseCase,
     this._authRepository,
   ) : super(const HomeInitial());
@@ -111,6 +109,21 @@ class HomeCubit extends Cubit<HomeState> {
       failure: (error) {
         emit(HomeError(error.message));
         emit(currentState);
+      },
+    );
+  }
+
+  Future<void> updateSemester(SemesterModel semester) async {
+    if (state is! HomeLoaded) return;
+    
+    final result = await _manageSemesterUseCase.update(semester);
+    result.when(
+      success: (_) async {
+        await _fetchDataForUser(_currentUserId!);
+      },
+      failure: (failure) {
+        emit(HomeError(failure.message));
+        _fetchDataForUser(_currentUserId!);
       },
     );
   }
@@ -215,22 +228,11 @@ class HomeCubit extends Cubit<HomeState> {
 
     await profileResult.when(
       success: (profile) async {
-        final result = await _calculateAndSyncCGPAUseCase(
-          userId: _currentUserId!,
-          allSubjects: currentState.allSubjects,
-          gradingScale: profile.gradingScale,
-        );
-
-        result.when(
-          success: (data) {
-            emit(
-              currentState.copyWith(
-                cgpa: data['cgpa'] as double,
-                totalCredits: data['totalCredits'] as int,
-              ),
-            );
-          },
-          failure: (error) {},
+        emit(
+          currentState.copyWith(
+            cgpa: profile.cgpa,
+            totalCredits: profile.totalCredits,
+          ),
         );
       },
       failure: (error) {},

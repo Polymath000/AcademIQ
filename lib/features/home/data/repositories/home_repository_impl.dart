@@ -49,6 +49,10 @@ class HomeRepositoryImpl implements HomeRepository {
           await _remoteDataSource.addSemester(
             SemesterModel.fromJson(jsonDecode(action.payload)),
           );
+        } else if (action.actionType == SyncActionTypes.updateSemester) {
+          await _remoteDataSource.updateSemester(
+            SemesterModel.fromJson(jsonDecode(action.payload)),
+          );
         } else if (action.actionType == SyncActionTypes.deleteSemester) {
           await _remoteDataSource.deleteSemester(action.payload);
         } else if (action.actionType == SyncActionTypes.addSubject) {
@@ -130,6 +134,32 @@ class HomeRepositoryImpl implements HomeRepository {
       return const Success(null);
     } catch (e) {
       return FailureResult(CacheFailure('Failed to add the semester'));
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> updateSemester(SemesterModel semester) async {
+    try {
+      await _localDataSource.updateSemester(semester);
+
+      if (await _networkInfo.isConnected) {
+        try {
+          await _remoteDataSource.updateSemester(semester);
+        } catch (e) {
+          await _queueAction(
+            SyncActionTypes.updateSemester,
+            jsonEncode(semester.toJson()),
+          );
+        }
+      } else {
+        await _queueAction(
+          SyncActionTypes.updateSemester,
+          jsonEncode(semester.toJson()),
+        );
+      }
+      return const Success(null);
+    } catch (e) {
+      return FailureResult(CacheFailure('Failed to update semester'));
     }
   }
 

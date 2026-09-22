@@ -8,6 +8,7 @@ abstract class HomeLocalDataSource {
   Future<List<SemesterModel>> getSemesters();
   Future<void> saveSemesters(List<SemesterModel> semesters);
   Future<void> addSemester(SemesterModel semester);
+  Future<void> updateSemester(SemesterModel semester);
   Future<void> deleteSemester(String semesterId);
 
   Future<List<SubjectModel>> getSubjects();
@@ -49,6 +50,11 @@ class HomeLocalDataSourceImpl implements HomeLocalDataSource {
 
   @override
   Future<void> addSemester(SemesterModel semester) async {
+    await _semestersBox.put(semester.id, semester);
+  }
+
+  @override
+  Future<void> updateSemester(SemesterModel semester) async {
     await _semestersBox.put(semester.id, semester);
   }
 

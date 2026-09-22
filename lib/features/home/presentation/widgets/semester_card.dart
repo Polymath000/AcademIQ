@@ -6,10 +6,7 @@ import 'package:gpa_calculator/features/home/presentation/widgets/semester_heade
 import '../../../../config/theme/app_colors.dart';
 import '../../domain/entities/semester_entity.dart';
 import '../cubit/home_cubit.dart';
-import '../../../settings/presentation/cubit/settings_cubit.dart';
-import '../../../settings/presentation/cubit/settings_state.dart';
 import 'subject_list_item.dart';
-import '../utils/semester_utils.dart';
 
 class SemesterCard extends StatelessWidget {
   final SemesterEntity semesterEntity;
@@ -19,29 +16,21 @@ class SemesterCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<HomeCubit>();
-    final settingsCubit = context.read<SettingsCubit>();
 
-    final scale = settingsCubit.state is SettingsLoaded
-        ? (settingsCubit.state as SettingsLoaded).profile.gradingScale
-        : [];
-
-    final double semGpa = SemesterUtils.calculateSemesterGpa(
-      semesterEntity,
-      scale.cast(),
-    );
-
-    return Container(
+    return Card(
       margin: const EdgeInsets.only(bottom: 16.0),
-      decoration: BoxDecoration(
-        color: AppColors.semesterCardBg,
+      color: AppColors.semesterCardBg,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        side: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
       ),
+      clipBehavior: Clip.antiAlias,
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
           tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          title: SemesterHeader(semester: semesterEntity, gpa: semGpa),
+          title: SemesterHeader(semester: semesterEntity),
           iconColor: AppColors.textMuted,
           collapsedIconColor: AppColors.textMuted,
           children: [

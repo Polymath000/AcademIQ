@@ -33,17 +33,4 @@ class GpaCalculatorUtil {
     };
   }
 
-  static Map<String, dynamic> calculateSemesterGPA({
-    required String semesterId,
-    required List<SubjectModel> allSubjects,
-    required List<GradingScaleModel> gradingScale,
-  }) {
-    final semesterSubjects = allSubjects
-        .where((s) => s.semesterId == semesterId)
-        .toList();
-    return calculateCGPA(
-      subjects: semesterSubjects,
-      gradingScale: gradingScale,
-    );
-  }
 }

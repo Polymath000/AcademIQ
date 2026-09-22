@@ -1,7 +1,7 @@
 name: gpa_calculator
 description: "GPA Calculator & AI Academic Advisor"
-publish_to: 'none'
-version: 1.0.0+1
+publish_to: "none"
+version: 1.0.1+2
 
 environment:
   sdk: ^3.13.2

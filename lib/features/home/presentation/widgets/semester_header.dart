@@ -4,9 +4,7 @@ import 'package:gpa_calculator/features/home/domain/entities/semester_entity.dar
 
 class SemesterHeader extends StatelessWidget {
   final SemesterEntity semester;
-  final double gpa;
-
-  const SemesterHeader({super.key, required this.semester, required this.gpa});
+  const SemesterHeader({super.key, required this.semester});
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +32,6 @@ class SemesterHeader extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(
-              gpa.toStringAsFixed(2),
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPurpleLight,
-              ),
-            ),
             const SizedBox(height: 4),
             Text(
               '${semester.totalCredits} Cr.',

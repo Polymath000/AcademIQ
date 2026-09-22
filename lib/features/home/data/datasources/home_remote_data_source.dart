@@ -5,6 +5,7 @@ import '../models/subject_model.dart';
 abstract class HomeRemoteDataSource {
   Future<List<SemesterModel>> getSemesters(String userId);
   Future<void> addSemester(SemesterModel semester);
+  Future<void> updateSemester(SemesterModel semester);
   Future<void> deleteSemester(String semesterId);
 
   Future<List<SubjectModel>> getSubjects(String userId);
@@ -34,6 +35,11 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   @override
   Future<void> addSemester(SemesterModel semester) async {
     await _supabase.from('semesters').insert(semester.toJson());
+  }
+
+  @override
+  Future<void> updateSemester(SemesterModel semester) async {
+    await _supabase.from('semesters').update({'name': semester.name}).eq('id', semester.id);
   }
 
   @override

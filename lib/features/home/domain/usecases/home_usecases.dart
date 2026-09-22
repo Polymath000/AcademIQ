@@ -47,6 +47,8 @@ class ManageSemesterUseCase {
 
   Future<ApiResult<void>> add(SemesterModel semester) =>
       _repository.addSemester(semester);
+  Future<ApiResult<void>> update(SemesterModel semester) =>
+      _repository.updateSemester(semester);
   Future<ApiResult<void>> delete(String semesterId) =>
       _repository.deleteSemester(semesterId);
 }
